@@ -19,7 +19,7 @@ const Task = ({task, toggleComplete, deleteTask}: {task: TaskInterface, toggleCo
     <li className={task.completed ? style.liComplete : style.li}>
       <div className={style.row}>
         <input type="checkbox" onChange={() => toggleComplete(task)} checked={task.completed ? true : false}></input>
-        <p className={task.completed ? style.textComplete : style.text} onClick={() => toggleComplete(task)}>{task.text}</p>
+        <p className={task.completed ? style.textComplete : style.text} onClick={() => toggleComplete(task)}>{task.title}</p>
       </div>
       <button className={style.button} onClick={() => deleteTask(task.id)}>{<FaRegTrashAlt />}</button>
     </li>
