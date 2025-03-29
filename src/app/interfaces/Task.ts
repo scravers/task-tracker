@@ -5,5 +5,5 @@ export interface TaskInterface {
     description: string;
     deadline: Date;
     priority: string;
-    completed: boolean;
+    status: string;
 }

@@ -33,12 +33,14 @@ export default function Home() {
   const [description, setDescription] = useState<string>("")
   // Create usestate for deadline
   const [deadline, setDeadline] = useState<string>(() => {
-    // Get start of year to be the default date
-    const date = new Date(new Date().getFullYear(), 0, 1);
+    // Get current date as default
+    const date = new Date()
     return date.toString()
   })
   // Create a usestate for the task priority
   const [priority, setPriority] = useState<string>("low")
+    // Create a usestate for the task status
+    const [status, setStatus] = useState<string>("todo")
 
   // Create task
   const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,11 +59,19 @@ export default function Home() {
       description: description,
       deadline: deadline,
       priority: priority,
-      completed: false
+      status: status
       
     })
     // Reset all components
     setTitle("")
+    setDescription("")
+    setDeadline(() => {
+      // Get current date as default
+      const date = new Date()
+      return date.toString()
+    })
+    setPriority("low")
+    setStatus("todo")
   }
 
   // Read task
@@ -91,7 +101,7 @@ export default function Home() {
   // Await to pause until complete
     await updateDoc(doc(db, "tasks", task.id), {
       // Toggle boolean
-      completed: !task.completed
+      status: "completed"
     })
   }
   
@@ -108,7 +118,7 @@ export default function Home() {
        <form className={style.form} onSubmit={createTask} >
          <input className={style.input} value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Title"></input>
          <input className={style.input} value={description} onChange={(e) => setDescription(e.target.value)} type="text" placeholder="Description"></input>
-         <input className={style.input} value={deadline} onChange={(e) => setDeadline(e.target.value)} type="date" placeholder="Deadline"></input>
+         <input className={style.input} value={deadline} onChange={(e) => setDeadline(e.target.value)} type="date"></input>
 
          <fieldset>
          <legend>Priority Level</legend>
@@ -123,6 +133,22 @@ export default function Home() {
           <div>
             <input type="radio" id="high" value="high" name="priority" onChange={(e) => setPriority(e.target.value)} checked={priority === "high"} />
             <label htmlFor="high" >High</label>
+          </div>
+         </fieldset>
+
+         <fieldset>
+         <legend>Status</legend>
+          <div>
+            <input type="radio" id="todo" value="todo" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "todo"} />
+            <label htmlFor="todo" >To do</label>
+          </div>
+          <div>
+            <input type="radio" id="in_progress" value="in_progress" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "in_progress"} />
+            <label htmlFor="in_progress" >In progress</label>
+          </div>
+          <div>
+            <input type="radio" id="completed" value="completed" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "completed"} />
+            <label htmlFor="completed" >Completed</label>
           </div>
          </fieldset>
          
