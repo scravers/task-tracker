@@ -4,6 +4,7 @@
 import Image from "next/image";
 import React, {useState, useEffect, use} from "react";
 import {AiOutlinePlus} from 'react-icons/ai'
+import {FaRegTrashAlt, FaPencilAlt} from 'react-icons/fa'
 // Import our task component to use in main page
 import Task from "./components/Task"
 // Import our task interface for type checking
@@ -11,7 +12,6 @@ import {TaskInterface} from "./interfaces/Task";
 // Import firebase database and functions
 import {db} from "./firebase"
 import {query, collection, onSnapshot, updateDoc, doc, addDoc, deleteDoc} from "firebase/firestore"
-import { MdDescription } from "react-icons/md";
 
 const style = {
   bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#2F80ED] to-[#1CB5E0]`,
@@ -25,7 +25,7 @@ const style = {
 
 export default function Home() {
   // Tasks is the current string array, setTasks is what we use to update
-  // Set the type to be a task
+  // Set the type to be a taskInterface
   const [tasks, setTasks] = useState<TaskInterface[]>([])
   // Create a usestate for entering a new task and default to empty
   const [title, setTitle] = useState<string>("")
@@ -39,8 +39,13 @@ export default function Home() {
   })
   // Create a usestate for the task priority
   const [priority, setPriority] = useState<string>("low")
-    // Create a usestate for the task status
-    const [status, setStatus] = useState<string>("todo")
+  // Create a usestate for the task status
+  const [status, setStatus] = useState<string>("todo")
+
+  // Create a usestate for the editbutton toggle
+  const [editState, setEditState] = useState<string>("edit test")
+
+
 
   // Create task
   const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,7 +64,8 @@ export default function Home() {
       description: description,
       deadline: deadline,
       priority: priority,
-      status: status
+      status: status,
+      isEditing: false
       
     })
     // Reset all components
@@ -100,10 +106,18 @@ export default function Home() {
   const toggleComplete = async (task: TaskInterface) => {
   // Await to pause until complete
     await updateDoc(doc(db, "tasks", task.id), {
-      // Toggle boolean
       status: "completed"
     })
   }
+
+  // Toggle task into edit mode
+  const toggleEditTask = async (task: TaskInterface, title: string) => {
+    // Update the tasks information and the edit button toggle
+    await updateDoc(doc(db, "tasks", task.id), {
+      title: title,
+      isEditing: !task.isEditing
+    })
+    }
   
   // Delete task
   const deleteTask = async (id: string) => {
@@ -151,12 +165,13 @@ export default function Home() {
             <label htmlFor="completed" >Completed</label>
           </div>
          </fieldset>
-         
+
          <button className={style.button}><AiOutlinePlus size={30}/></button>
        </form>
        <ul>
           {tasks.map((task, index) => (
-            <Task key={index} task={task} toggleComplete={toggleComplete} deleteTask={deleteTask} />
+            <Task key={index} task={task} toggleComplete={toggleComplete} toggleEditTask={toggleEditTask} deleteTask={deleteTask} />
+            
           ))}
        </ul>
        {tasks.length < 1 ? null : <p className={style.count}>You have {tasks.length} tasks</p>}

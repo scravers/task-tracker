@@ -6,4 +6,5 @@ export interface TaskInterface {
     deadline: Date;
     priority: string;
     status: string;
+    isEditing: boolean;
 }
