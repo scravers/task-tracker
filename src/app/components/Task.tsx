@@ -31,8 +31,20 @@ const Task = ({task, toggleComplete, toggleEditTask, deleteTask}: {task: TaskInt
         {
         // Check if the task is currently being edited, if it is then change the title to a text field
         task.isEditing ? 
-        <input className={style.input} onChange={(e) => editTitle(e.target.value)} value={title} type="text" placeholder="New Title" ></input> :
-        <p className={style.text} onClick={() => toggleComplete(task)}>{task.title}</p> 
+          <input 
+            className={style.input} 
+            onChange={(e) => editTitle(e.target.value)} 
+            value={title} 
+            type="text" 
+            placeholder="New Title" 
+            >
+          </input> 
+        :
+          <p 
+            className={style.text}
+            onClick={() => toggleComplete(task)}
+            >{task.title}
+          </p>
         }
       </div>
       { /* Send up the task that was toggled, as well as send up the information in the usestates to update the task*/ }
