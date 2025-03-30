@@ -207,7 +207,7 @@ const Task = ({task, toggleComplete, toggleEditTask, deleteTask}: {task: TaskInt
       }
       { /* Send up the task that was toggled, as well as send up the information in the usestates to update the task*/ }
       <button className={style.button} onClick={() => toggleEditTask(task, title, desc, deadline, priority, status)}> {task.isEditing ? <FaCheck /> : <FaPencilAlt />} </button>
-      <button className={style.button} onClick={() => deleteTask(task.id)}>{<FaRegTrashAlt />}</button>
+      <button className={style.button} onClick={() => deleteTask(task)}>{<FaRegTrashAlt />}</button>
     </li>
   )
 }

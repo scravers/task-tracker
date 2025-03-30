@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, {useState, useEffect, use} from "react";
 import {AiOutlinePlus} from 'react-icons/ai'
 import {FaRegTrashAlt, FaPencilAlt} from 'react-icons/fa'
+import swal from 'sweetalert';
 // Import our task component to use in main page
 import Task from "./components/Task"
 // Import our task interface for type checking
@@ -54,7 +55,9 @@ export default function Home() {
 
     // Check for title
     if (title === "") {
-      alert("Enter a name for the task")
+      swal("Enter a name for the task", "", "warning");
+      // Old alert
+      // alert("Enter a name for the task")
       return
     }
 
@@ -124,8 +127,26 @@ export default function Home() {
     }
   
   // Delete task
-  const deleteTask = async (id: string) => {
-    await deleteDoc(doc(db, "tasks", id))
+  const deleteTask = async (task: TaskInterface) => {
+    
+    swal({
+      title: "Delete " + task.title,
+      text: "Are you sure you want to delete this task?",
+      icon: "warning",
+      buttons: ["No", "Yes"],
+      dangerMode: true,
+    })
+    .then(async (willDelete) => {
+      if (willDelete) {
+        await deleteDoc(doc(db, "tasks", task.id))
+      }
+    });
+    
+    // Old alert
+    // if (confirm("Are you sure you want to delete " + task.title + "?")) {
+    //   await deleteDoc(doc(db, "tasks", task.id))
+    // }
+    
   }
 
   return (
