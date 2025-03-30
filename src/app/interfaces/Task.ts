@@ -3,7 +3,7 @@ export interface TaskInterface {
     id: string;
     title: string;
     description: string;
-    deadline: Date;
+    deadline: string;
     priority: string;
     status: string;
     isEditing: boolean;

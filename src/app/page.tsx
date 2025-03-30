@@ -33,9 +33,9 @@ export default function Home() {
   const [description, setDescription] = useState<string>("")
   // Create usestate for deadline
   const [deadline, setDeadline] = useState<string>(() => {
-    // Get current date as default
+    // Get current date as default in yyyy-mm-dd
     const date = new Date()
-    return date.toString()
+    return date.toISOString().slice(0, 10)
   })
   // Create a usestate for the task priority
   const [priority, setPriority] = useState<string>("low")
@@ -74,7 +74,7 @@ export default function Home() {
     setDeadline(() => {
       // Get current date as default
       const date = new Date()
-      return date.toString()
+      return date.toISOString().slice(0, 10)
     })
     setPriority("low")
     setStatus("todo")
@@ -111,10 +111,14 @@ export default function Home() {
   }
 
   // Toggle task into edit mode
-  const toggleEditTask = async (task: TaskInterface, title: string) => {
+  const toggleEditTask = async (task: TaskInterface, title: string, description: string, deadline: string, priority: string, status: string) => {
     // Update the tasks information and the edit button toggle
     await updateDoc(doc(db, "tasks", task.id), {
       title: title,
+      description: description,
+      deadline: deadline,
+      priority: priority,
+      status: status,
       isEditing: !task.isEditing
     })
     }
@@ -132,7 +136,7 @@ export default function Home() {
        <form className={style.form} onSubmit={createTask} >
          <input className={style.input} value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Title"></input>
          <input className={style.input} value={description} onChange={(e) => setDescription(e.target.value)} type="text" placeholder="Description"></input>
-         <input className={style.input} value={deadline} onChange={(e) => setDeadline(e.target.value)} type="date"></input>
+         <input className={style.input} value={deadline} onChange={(e) => setDeadline(e.target.value.toString())} type="date"></input>
 
          <fieldset>
          <legend>Priority Level</legend>
@@ -158,7 +162,7 @@ export default function Home() {
           </div>
           <div>
             <input type="radio" id="in_progress" value="in_progress" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "in_progress"} />
-            <label htmlFor="in_progress" >In progress</label>
+            <label htmlFor="in_progress" >In Progress</label>
           </div>
           <div>
             <input type="radio" id="completed" value="completed" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "completed"} />
