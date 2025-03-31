@@ -4,7 +4,7 @@ export interface TaskInterface {
     title: string;
     description: string;
     deadline: string;
-    priority: string;
-    status: string;
+    priority: "low" | "medium" | "high";
+    status: "todo" | "in_progress" | "completed";
     isEditing: boolean;
 }

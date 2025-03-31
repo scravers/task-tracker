@@ -17,7 +17,7 @@ const style = {
 // Need to have checkmark button press send up the changed information to a function to change in db
 
 // Type safety
-const Task = ({task, toggleComplete, toggleEditTask, deleteTask}: {task: TaskInterface, toggleComplete: Function, toggleEditTask: Function, deleteTask: Function}) => {
+const Task = ({task, editTask, deleteTask}: {task: TaskInterface, editTask: Function, deleteTask: Function}) => {
 
   // Use states for editing info set to original title
   const [title, editTitle] = useState<string>(task.title)
@@ -174,8 +174,6 @@ const Task = ({task, toggleComplete, toggleEditTask, deleteTask}: {task: TaskInt
           {/* Title */}
           <p 
             className={style.text}
-            // Could remove this too
-            onClick={() => toggleComplete(task)}
             >{task.title}
           </p>
 
@@ -206,7 +204,7 @@ const Task = ({task, toggleComplete, toggleEditTask, deleteTask}: {task: TaskInt
         </div>
       }
       { /* Send up the task that was toggled, as well as send up the information in the usestates to update the task*/ }
-      <button className={style.button} onClick={() => toggleEditTask(task, title, desc, deadline, priority, status)}> {task.isEditing ? <FaCheck /> : <FaPencilAlt />} </button>
+      <button className={style.button} onClick={() => editTask(task, title, desc, deadline, priority, status)}> {task.isEditing ? <FaCheck /> : <FaPencilAlt />} </button>
       <button className={style.button} onClick={() => deleteTask(task)}>{<FaRegTrashAlt />}</button>
     </li>
   )

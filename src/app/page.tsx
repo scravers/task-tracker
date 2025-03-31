@@ -2,9 +2,8 @@
 'use client'
 
 import Image from "next/image";
-import React, {useState, useEffect, use} from "react";
-import {AiOutlinePlus} from 'react-icons/ai'
-import {FaRegTrashAlt, FaPencilAlt} from 'react-icons/fa'
+import React, {useState, useEffect, use, ButtonHTMLAttributes} from "react";
+import {FaExclamation, FaPlus, FaRegCalendarAlt, FaSyncAlt, FaTextHeight} from 'react-icons/fa'
 import swal from 'sweetalert';
 // Import our task component to use in main page
 import Task from "./components/Task"
@@ -21,6 +20,7 @@ const style = {
   form: `flex justify-between`,
   input: `border p-2 ml-2 w-full text-xl`,
   button: `border p-4 ml-2 bg-purple-100`,
+  sort_button: `border p-4 ml-2 bg-green-100`,
   count: `text-center p-2`
 }
 
@@ -43,11 +43,6 @@ export default function Home() {
   // Create a usestate for the task status
   const [status, setStatus] = useState<string>("todo")
 
-  // Create a usestate for the editbutton toggle
-  const [editState, setEditState] = useState<string>("edit test")
-
-
-
   // Create task
   const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
     // Stops page from reloading
@@ -61,7 +56,7 @@ export default function Home() {
       return
     }
 
-    // Add doc to tasks
+    // Add task to a document
     await addDoc(collection(db, "tasks"), {
       title: title,
       description: description,
@@ -71,7 +66,7 @@ export default function Home() {
       isEditing: false
       
     })
-    // Reset all components
+    // Reset all parameters
     setTitle("")
     setDescription("")
     setDeadline(() => {
@@ -84,6 +79,7 @@ export default function Home() {
   }
 
   // Read task
+  // Once on first run
   useEffect(()=>{
     // Return a query of the tasks collection in the database
     const q = query(collection(db, "tasks"))
@@ -96,6 +92,8 @@ export default function Home() {
         // Push data to the tasksArr with the document id from the db, and assert the type as a Task
         tasksArr.push({...doc.data(), id: doc.id} as TaskInterface)
       });
+      // Sort by title by default
+      tasksArr.sort((a, b) => a.title.localeCompare(b.title))
       // Set the tasks using the useStatehook
       setTasks(tasksArr)
     })
@@ -106,15 +104,30 @@ export default function Home() {
 
   // Update task
   // Async so we dont pause the application
-  const toggleComplete = async (task: TaskInterface) => {
-  // Await to pause until complete
-    await updateDoc(doc(db, "tasks", task.id), {
-      status: "completed"
-    })
+  const sortByTitle = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Need to update a copy of array for react to notice
+    setTasks([...tasks].sort((a, b) => a.title.localeCompare(b.title)))
+  }
+
+  const sortByDeadline = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    setTasks([...tasks].sort((a, b) => a.deadline.localeCompare(b.deadline)))
+  }
+
+  const sortByPriority = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Sort order
+    const priority_order = { low: 1, medium: 2, high: 3 };
+    setTasks([...tasks].sort((a, b) => priority_order[a.priority] - priority_order[b.priority]))
+  }
+
+  const sortByStatus = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Sort order
+    const status_order = { todo: 1, in_progress: 2, completed: 3 };
+    setTasks([...tasks].sort((a, b) => status_order[a.status] - status_order[b.status]))
   }
 
   // Toggle task into edit mode
-  const toggleEditTask = async (task: TaskInterface, title: string, description: string, deadline: string, priority: string, status: string) => {
+  // Async so we dont pause the application
+  const editTask = async (task: TaskInterface, title: string, description: string, deadline: string, priority: string, status: string) => {
     // Update the tasks information and the edit button toggle
     await updateDoc(doc(db, "tasks", task.id), {
       title: title,
@@ -128,7 +141,7 @@ export default function Home() {
   
   // Delete task
   const deleteTask = async (task: TaskInterface) => {
-    
+    // https://github.com/t4t5/sweetalert
     swal({
       title: "Delete " + task.title,
       text: "Are you sure you want to delete this task?",
@@ -152,6 +165,18 @@ export default function Home() {
   return (
 
     <div className={style.bg}>
+
+      <div className={style.container}>
+      <button className={style.sort_button} onClick={sortByTitle} ><FaTextHeight size={30}/></button>
+      <button className={style.sort_button} onClick={sortByDeadline} ><FaRegCalendarAlt size={30}/></button>
+      <button className={style.sort_button} onClick={sortByPriority} ><FaExclamation size={30}/></button>
+      <button className={style.sort_button} onClick={sortByStatus} ><FaSyncAlt size={30}/></button>
+
+      
+      
+      </div>
+
+
       <div className={style.container}>
        <h3 className={style.heading}>Task Tracker</h3>
        <form className={style.form} onSubmit={createTask} >
@@ -191,11 +216,11 @@ export default function Home() {
           </div>
          </fieldset>
 
-         <button className={style.button}><AiOutlinePlus size={30}/></button>
+         <button className={style.button}><FaPlus size={30}/></button>
        </form>
        <ul>
           {tasks.map((task, index) => (
-            <Task key={index} task={task} toggleComplete={toggleComplete} toggleEditTask={toggleEditTask} deleteTask={deleteTask} />
+            <Task key={index} task={task} editTask={editTask} deleteTask={deleteTask} />
             
           ))}
        </ul>
