@@ -28,7 +28,7 @@ const Task = ({task, editTask, deleteTask}: {task: TaskInterface, editTask: Func
 
 
   return (
-    <li className={task.status === "completed" ? style.liComplete : style.li} id="test">
+    <li className={style.li}>
       {
       // Check if the task is currently being edited, if it is change the items displayed
       task.isEditing ? 

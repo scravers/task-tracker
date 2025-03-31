@@ -167,63 +167,156 @@ export default function Home() {
     <div className={style.bg}>
 
       <div className={style.container}>
-      <button className={style.sort_button} onClick={sortByTitle} ><FaTextHeight size={30}/></button>
-      <button className={style.sort_button} onClick={sortByDeadline} ><FaRegCalendarAlt size={30}/></button>
-      <button className={style.sort_button} onClick={sortByPriority} ><FaExclamation size={30}/></button>
-      <button className={style.sort_button} onClick={sortByStatus} ><FaSyncAlt size={30}/></button>
-
-      
-      
+        <button className={style.sort_button} onClick={sortByTitle} ><FaTextHeight size={30}/></button>
+        <button className={style.sort_button} onClick={sortByDeadline} ><FaRegCalendarAlt size={30}/></button>
+        <button className={style.sort_button} onClick={sortByPriority} ><FaExclamation size={30}/></button>
+        <button className={style.sort_button} onClick={sortByStatus} ><FaSyncAlt size={30}/></button>
       </div>
-
 
       <div className={style.container}>
        <h3 className={style.heading}>Task Tracker</h3>
        <form className={style.form} onSubmit={createTask} >
-         <input className={style.input} value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Title"></input>
-         <input className={style.input} value={description} onChange={(e) => setDescription(e.target.value)} type="text" placeholder="Description"></input>
-         <input className={style.input} value={deadline} onChange={(e) => setDeadline(e.target.value.toString())} type="date"></input>
+         <input 
+            className={style.input} 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            type="text" placeholder="Title"
+            >
+          </input>
+          <input 
+            className={style.input} 
+            value={description} 
+            onChange={(e) => setDescription(e.target.value)} 
+            type="text" placeholder="Description"
+            >
+          </input>
+          <input 
+            className={style.input} 
+            value={deadline} 
+            onChange={(e) => setDeadline(e.target.value.toString())} 
+            type="date"
+            >
+          </input>
 
          <fieldset>
          <legend>Priority Level</legend>
           <div>
-            <input type="radio" id="low" value="low" name="priority" onChange={(e) => setPriority(e.target.value)} checked={priority === "low"} />
-            <label htmlFor="low" >Low</label>
+            <input 
+              type="radio" 
+              id="low" 
+              value="low" 
+              name="priority" 
+              onChange={(e) => setPriority(e.target.value)} 
+              checked={priority === "low"}
+              >
+            </input>
+            <label 
+              htmlFor="low" 
+              >Low
+            </label>
           </div>
+
           <div>
-            <input type="radio" id="medium" value="medium" name="priority" onChange={(e) => setPriority(e.target.value)} checked={priority === "medium"} />
-            <label htmlFor="medium" >Medium</label>
+            <input 
+              type="radio" 
+              id="medium" 
+              value="medium" 
+              name="priority" 
+              onChange={(e) => setPriority(e.target.value)} 
+              checked={priority === "medium"}
+              >
+            </input>
+            <label 
+              htmlFor="medium" 
+              >Medium
+            </label>
           </div>
+
           <div>
-            <input type="radio" id="high" value="high" name="priority" onChange={(e) => setPriority(e.target.value)} checked={priority === "high"} />
-            <label htmlFor="high" >High</label>
+            <input 
+              type="radio" 
+              id="high" 
+              value="high" 
+              name="priority" 
+              onChange={(e) => setPriority(e.target.value)} 
+              checked={priority === "high"}
+              >
+            </input>
+            <label 
+              htmlFor="high" 
+              >High
+            </label>
           </div>
          </fieldset>
 
          <fieldset>
          <legend>Status</legend>
           <div>
-            <input type="radio" id="todo" value="todo" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "todo"} />
-            <label htmlFor="todo" >To do</label>
+            <input 
+              type="radio" 
+              id="todo" 
+              value="todo" 
+              name="status" 
+              onChange={(e) => setStatus(e.target.value)} 
+              checked={status === "todo"}
+              >
+            </input>
+            <label 
+              htmlFor="todo" 
+              >To do
+            </label>
           </div>
+
           <div>
-            <input type="radio" id="in_progress" value="in_progress" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "in_progress"} />
-            <label htmlFor="in_progress" >In Progress</label>
+            <input 
+              type="radio" 
+              id="in_progress" 
+              value="in_progress" 
+              name="status" 
+              onChange={(e) => setStatus(e.target.value)} 
+              checked={status === "in_progress"}
+              >
+            </input>
+            <label 
+              htmlFor="in_progress" 
+              >In Progress
+            </label>
           </div>
+
           <div>
-            <input type="radio" id="completed" value="completed" name="status" onChange={(e) => setStatus(e.target.value)} checked={status === "completed"} />
-            <label htmlFor="completed" >Completed</label>
+            <input 
+              type="radio" 
+              id="completed" 
+              value="completed" 
+              name="status" 
+              onChange={(e) => setStatus(e.target.value)} 
+              checked={status === "completed"}
+              >
+            </input>
+            <label 
+              htmlFor="completed" 
+              >Completed
+            </label>
           </div>
          </fieldset>
 
-         <button className={style.button}><FaPlus size={30}/></button>
+         <button 
+          className={style.button}
+          ><FaPlus size={30}/>
+        </button>
        </form>
+
        <ul>
           {tasks.map((task, index) => (
-            <Task key={index} task={task} editTask={editTask} deleteTask={deleteTask} />
-            
+            <Task 
+              key={index} 
+              task={task} 
+              editTask={editTask} 
+              deleteTask={deleteTask}
+            />
           ))}
        </ul>
+
        {tasks.length < 1 ? null : <p className={style.count}>You have {tasks.length} tasks</p>}
     </div>
   </div>
