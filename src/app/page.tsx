@@ -50,7 +50,6 @@ export default function Home() {
   const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
     // Stops page from reloading
     e.preventDefault()
-    console.log(tasks);
 
     // Check for title
     if (title === "") {
