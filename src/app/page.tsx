@@ -14,13 +14,16 @@ import {db} from "./firebase"
 import {query, collection, onSnapshot, updateDoc, doc, addDoc, deleteDoc} from "firebase/firestore"
 
 const style = {
-  bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#2F80ED] to-[#1CB5E0]`,
+  bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#0078E8] to-[#93C9FE]`,
   container: `bg-slate-100 max-w-[1000px] m-auto rounded-md shadow-xl p-4`,
+  sort_container: `bg-slate-100 max-w-[1000px] pt-4`,
   heading: `text-3xl font-bold text-center text-gray-800 p-2`,
-  form: `flex justify-between`,
-  input: `border p-2 ml-2 w-full text-xl`,
-  button: `border p-4 ml-2 bg-purple-100`,
-  sort_button: `border p-4 ml-2 bg-green-100`,
+  form: `flex justify-between items-start`,
+  input: `border p-1 ml-2 w-full text-xl max-w-[200px]`,
+  tooltip: `absolute mb-2 w-30 p-2 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity`,
+  fieldset: `flex flex-col space-y-2`,
+  button: `border p-4 ml-2 bg-purple-100 group`,
+  sort_button: `border p-4 ml-2 bg-green-100 group`,
   count: `text-center p-2`
 }
 
@@ -167,13 +170,6 @@ export default function Home() {
     <div className={style.bg}>
 
       <div className={style.container}>
-        <button className={style.sort_button} onClick={sortByTitle} ><FaTextHeight size={30}/></button>
-        <button className={style.sort_button} onClick={sortByDeadline} ><FaRegCalendarAlt size={30}/></button>
-        <button className={style.sort_button} onClick={sortByPriority} ><FaExclamation size={30}/></button>
-        <button className={style.sort_button} onClick={sortByStatus} ><FaSyncAlt size={30}/></button>
-      </div>
-
-      <div className={style.container}>
        <h3 className={style.heading}>Task Tracker</h3>
        <form className={style.form} onSubmit={createTask} >
          <input 
@@ -198,10 +194,11 @@ export default function Home() {
             >
           </input>
 
-         <fieldset>
+         <fieldset className={style.fieldset}>
          <legend>Priority Level</legend>
           <div>
             <input 
+              className="cursor-pointer"
               type="radio" 
               id="low" 
               value="low" 
@@ -210,7 +207,8 @@ export default function Home() {
               checked={priority === "low"}
               >
             </input>
-            <label 
+            <label
+              className="cursor-pointer"
               htmlFor="low" 
               >Low
             </label>
@@ -218,6 +216,7 @@ export default function Home() {
 
           <div>
             <input 
+              className="cursor-pointer"
               type="radio" 
               id="medium" 
               value="medium" 
@@ -227,13 +226,15 @@ export default function Home() {
               >
             </input>
             <label 
+              className="cursor-pointer"
               htmlFor="medium" 
               >Medium
             </label>
           </div>
 
           <div>
-            <input 
+            <input
+              className="cursor-pointer"
               type="radio" 
               id="high" 
               value="high" 
@@ -243,16 +244,18 @@ export default function Home() {
               >
             </input>
             <label 
+              className="cursor-pointer"
               htmlFor="high" 
               >High
             </label>
           </div>
          </fieldset>
 
-         <fieldset>
+         <fieldset className={style.fieldset}>
          <legend>Status</legend>
           <div>
             <input 
+              className="accent-red-400 cursor-pointer"
               type="radio" 
               id="todo" 
               value="todo" 
@@ -262,13 +265,15 @@ export default function Home() {
               >
             </input>
             <label 
+              className="cursor-pointer"
               htmlFor="todo" 
-              >To do
+              > To do
             </label>
           </div>
 
           <div>
             <input 
+              className="accent-yellow-300 cursor-pointer"
               type="radio" 
               id="in_progress" 
               value="in_progress" 
@@ -278,13 +283,15 @@ export default function Home() {
               >
             </input>
             <label 
+              className="cursor-pointer"
               htmlFor="in_progress" 
-              >In Progress
+              > In Progress
             </label>
           </div>
 
           <div>
             <input 
+              className="accent-green-500 cursor-pointer"
               type="radio" 
               id="completed" 
               value="completed" 
@@ -294,17 +301,60 @@ export default function Home() {
               >
             </input>
             <label 
+              className="cursor-pointer"
               htmlFor="completed" 
-              >Completed
+              > Completed
             </label>
           </div>
          </fieldset>
 
          <button 
           className={style.button}
-          ><FaPlus size={30}/>
+          ><FaPlus size={16}/>
+          <span 
+            className={style.tooltip}
+            > Add Task
+          </span>
         </button>
-       </form>
+      </form>
+
+      <div className={style.sort_container}>
+        <button 
+          className={style.sort_button} 
+          onClick={sortByTitle} ><FaTextHeight size={16}/>
+          <span 
+            className={style.tooltip}
+            > Sort by Text
+          </span>
+        </button>
+
+        <button 
+          className={style.sort_button} 
+          onClick={sortByDeadline} ><FaRegCalendarAlt size={16}/>
+          <span 
+            className={style.tooltip}
+            > Sort by Deadline
+          </span>
+        </button>
+
+        <button 
+          className={style.sort_button} 
+          onClick={sortByPriority} ><FaExclamation size={16}/>
+          <span 
+            className={style.tooltip}
+            > Sort by Priority
+          </span>
+        </button>
+
+        <button 
+          className={style.sort_button} 
+          onClick={sortByStatus} ><FaSyncAlt size={16}/>
+          <span 
+            className={style.tooltip}
+            > Sort by Status
+          </span>
+        </button>
+      </div>
 
        <ul>
           {tasks.map((task, index) => (
@@ -317,7 +367,14 @@ export default function Home() {
           ))}
        </ul>
 
-       {tasks.length < 1 ? null : <p className={style.count}>You have {tasks.length} tasks</p>}
+        {tasks.length < 1 ? 
+          null
+        : 
+          <p 
+          className={style.count}
+          >You have {tasks.length} tasks
+          </p>
+        }
     </div>
   </div>
 

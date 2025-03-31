@@ -3,15 +3,19 @@ import {FaRegTrashAlt, FaPencilAlt, FaCheck} from 'react-icons/fa'
 
 // Import our task interface for type checking
 import {TaskInterface} from "../interfaces/Task";
+import { todo } from 'node:test';
 
 const style = {
   li: `flex justify-between bg-slate-200 p-4 my-2 capitalize`,
   liComplete: `flex justify-between bg-slate-400 p-4 my-2 capitalize`,
   row: `flex`,
   input: `border p-2 ml-2 w-full text-xl`,
-  text: `ml-2 cursor-pointer`,
+  text: `ml-2`,
   textComplete: `ml-2 cursor-pointer line-through`,
-  button: `cursor-pointer flex items-center`
+  button: `cursor-pointer flex items-center`,
+  greenCircle: `w-6 h-6 bg-green-500 rounded-full mr-2 inline-block`,
+  yellowCircle: `w-6 h-6 bg-yellow-300 rounded-full mr-2 inline-block`,
+  redCircle: `w-6 h-6 bg-red-500 rounded-full mr-2 inline-block`
 }
 
 // Need to have checkmark button press send up the changed information to a function to change in db
@@ -198,7 +202,8 @@ const Task = ({task, editTask, deleteTask}: {task: TaskInterface, editTask: Func
           {/* Status */}
           <p 
             className={style.text}
-            >{task.status}
+            >{task.status == "todo" ? <span className={style.redCircle}></span> : task.status == "in_progress" ? <span className={style.yellowCircle}></span> : <span className={style.greenCircle}></span>}
+            
           </p>
 
         </div>
