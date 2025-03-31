@@ -131,31 +131,56 @@ export default function Home() {
 
   // Toggle task into edit mode
   // Async so we dont pause the application
-  const editTask = async (task: TaskInterface, title: string, description: string, deadline: string, priority: string, status: string) => {
+  const editTask = async (task: TaskInterface, id: string, title: string, description: string, deadline: string, priority: string, status: string) => {
 
     let count = 0
+    let id_being_edited = ""
     // Check if any other tasks are currently being edited
     tasks.forEach(item => {
       if (item.isEditing === true) {
         count++
+        id_being_edited = item.id
       }
     });
-    
-    // Make sure there are non being edited or the current task is in edit mode already
-    if (count == 0 || task.isEditing) {
-      // Update the tasks information and the edit button toggle
+
+    if (count === 0) {
+      await updateDoc(doc(db, "tasks", task.id), {
+        isEditing: true
+      })
+      return
+    }
+    // Make sure there are non being edited and its the correct id
+    else if (count === 1 && id_being_edited == id) {
       await updateDoc(doc(db, "tasks", task.id), {
         title: title,
         description: description,
         deadline: deadline,
         priority: priority,
         status: status,
-        isEditing: !task.isEditing
+        isEditing: false
       })
     }
     else {
       swal("Save changes before making new edit", "", "warning")
+      return
     }
+    
+    // // Make sure there are non being edited or the current task is in edit mode already
+    // if (task.isEditing) {
+    //   console.log("Updates?");
+    //   // Update the tasks information and the edit button toggle
+    //   await updateDoc(doc(db, "tasks", task.id), {
+    //     title: title,
+    //     description: description,
+    //     deadline: deadline,
+    //     priority: priority,
+    //     status: status,
+    //     isEditing: false
+    //   })
+    // }
+    // else {
+    //   
+    // }
 
   }
 
