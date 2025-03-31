@@ -14,7 +14,7 @@ import {db} from "./firebase"
 import {query, collection, onSnapshot, updateDoc, doc, addDoc, deleteDoc} from "firebase/firestore"
 
 const style = {
-  bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#0078E8] to-[#93C9FE]`,
+  bg: `min-h-screen w-screen p-4 bg-gradient-to-r from-[#0078E8] to-[#93C9FE]`,
   container: `bg-slate-100 max-w-[1000px] m-auto rounded-md shadow-xl p-4`,
   sort_container: `bg-slate-100 max-w-[1000px] pt-4`,
   heading: `text-3xl font-bold text-center text-gray-800 p-2`,
@@ -50,6 +50,7 @@ export default function Home() {
   const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
     // Stops page from reloading
     e.preventDefault()
+    console.log(tasks);
 
     // Check for title
     if (title === "") {
@@ -118,7 +119,7 @@ export default function Home() {
 
   const sortByPriority = async (e: React.MouseEvent<HTMLButtonElement>) => {
     // Sort order
-    const priority_order = { low: 1, medium: 2, high: 3 };
+    const priority_order = { low: 3, medium: 2, high: 1 };
     setTasks([...tasks].sort((a, b) => priority_order[a.priority] - priority_order[b.priority]))
   }
 
@@ -131,17 +132,33 @@ export default function Home() {
   // Toggle task into edit mode
   // Async so we dont pause the application
   const editTask = async (task: TaskInterface, title: string, description: string, deadline: string, priority: string, status: string) => {
-    // Update the tasks information and the edit button toggle
-    await updateDoc(doc(db, "tasks", task.id), {
-      title: title,
-      description: description,
-      deadline: deadline,
-      priority: priority,
-      status: status,
-      isEditing: !task.isEditing
-    })
+
+    let count = 0
+    // Check if any other tasks are currently being edited
+    tasks.forEach(item => {
+      if (item.isEditing === true) {
+        count++
+      }
+    });
+    
+    // Make sure there are non being edited or the current task is in edit mode already
+    if (count == 0 || task.isEditing) {
+      // Update the tasks information and the edit button toggle
+      await updateDoc(doc(db, "tasks", task.id), {
+        title: title,
+        description: description,
+        deadline: deadline,
+        priority: priority,
+        status: status,
+        isEditing: !task.isEditing
+      })
     }
-  
+    else {
+      swal("Save changes before making new edit", "", "warning")
+    }
+
+  }
+
   // Delete task
   const deleteTask = async (task: TaskInterface) => {
     // https://github.com/t4t5/sweetalert
@@ -156,7 +173,7 @@ export default function Home() {
       if (willDelete) {
         await deleteDoc(doc(db, "tasks", task.id))
       }
-    });
+    })
     
     // Old alert
     // if (confirm("Are you sure you want to delete " + task.title + "?")) {
@@ -210,7 +227,7 @@ export default function Home() {
             <label
               className="cursor-pointer"
               htmlFor="low" 
-              >Low
+              > Low
             </label>
           </div>
 
@@ -228,7 +245,7 @@ export default function Home() {
             <label 
               className="cursor-pointer"
               htmlFor="medium" 
-              >Medium
+              > Medium
             </label>
           </div>
 
@@ -246,7 +263,7 @@ export default function Home() {
             <label 
               className="cursor-pointer"
               htmlFor="high" 
-              >High
+              > High
             </label>
           </div>
          </fieldset>
@@ -324,7 +341,7 @@ export default function Home() {
           onClick={sortByTitle} ><FaTextHeight size={16}/>
           <span 
             className={style.tooltip}
-            > Sort by Text
+            > Sort by Title
           </span>
         </button>
 
